@@ -58,7 +58,7 @@ function switchMode() {
         });
 
         document.querySelector('.header__item-descr').style.color = '#000';
-        document.querySelector('.logo > img').src = 'logo/youtube_night.svg';
+        document.querySelector('.logo > img').src = 'logo/youtube.svg';
     }
 } 
 
