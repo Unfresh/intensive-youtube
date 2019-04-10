@@ -30,7 +30,6 @@ bindSlideToggle('.hamburger', '[data-slide="nav"]', '.header__menu', 'slide-acti
 function switchMode() {
     if (night === false) {
         night = true;
-// document.body.style.backgroundColor = '#000';
         document.body.classList.add('night');
         document.querySelectorAll('.hamburger > line').forEach(item => {
             item.style.stroke = '#fff';
@@ -88,17 +87,96 @@ more.addEventListener('click', () => {
         card.classList.add('videos__item', 'videos__item-active');
         card.setAttribute('data-url', data[3][i]);
         card.innerHTML = `
-            <img src="${data[0][i]}" alt="thumb">
+            <img src="${data[0] [i]}" alt="thumb">
             <div class="videos__item-descr">
-                ${data[1][i]}
+                ${data[1] [i]}
             </div>
             <div class="videos__item-views">
-            ${data[2][i]}
-        </div>
+                ${data[2] [i]}
+            </div>
         `;
         videosWrapper.appendChild(card);
-        setTimeout( () => {
+        setTimeout ( () => {
             card.classList.remove('videos__item-active');
         }, 10);
+        bindNewModal(card);
+    }
+
+    sliceTitle('.videos__item-descr', 100);
+});
+
+function sliceTitle(selector, count) {
+    document.querySelectorAll('.videos__item-descr').forEach(item => {
+        item.textContent.trim();
+
+        if (item.textContent.length < count) {
+            return;
+        } else {
+            const str = item.textContent.slice(0, count + 1) + "...";
+            item.textContent = str;
+        }
+    });
+}
+
+sliceTitle('.videos__item-descr', 100);
+
+function openModal() {
+    modal.style.display = 'block';
+}
+
+function closeModal() {
+    modal.style.display = 'none';
+    player.stopVideo();
+}
+
+function bindModal(cards) {
+    cards.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const id = item.getAttribute('data-url');
+            loadVideo(id);
+            openModal();
+        });
+    });
+}
+
+bindModal(videos);
+
+function bindNewModal(cards) {
+    cards.addEventListener('click', (e) => {
+        e.preventDefault();
+        const id = cards.getAttribute('data-url');
+        loadVideo(id);
+        openModal();
+    });
+}
+
+modal.addEventListener('click', (e) => {
+    if (!e.target.classList.contains('modal__body')) {
+        closeModal();
     }
 });
+
+function createVideo() {
+    var tag = document.createElement('script');
+
+    tag.src = "https://www.youtube.com/iframe_api";
+    var firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    setTimeout(() => {
+        player = new YT.Player('frame', {
+            height: '100%',
+            width: '100%',
+            videoId: 'M7lc1UVf-VE',
+        });
+    }, 300);
+
+    
+}
+
+createVideo();
+
+function loadVideo(id) {
+    player.loadVideoById({'videoId': `${id}`});
+}
